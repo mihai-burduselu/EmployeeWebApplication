@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.SignalR;
 
 namespace EmployeeWebApplication
 {
@@ -19,11 +20,13 @@ namespace EmployeeWebApplication
         public Employee GetByFirstName(string firstname)
         {
             return EmployeeRepository.GetByFirstName(firstname);
-        }   
+        }
         [HttpPost]
         public void CreateEmployee(Employee employee)
         {
             EmployeeRepository.Add(employee);
+            var hub = GlobalHost.ConnectionManager.GetHubContext<EmployeesHub>();
+            hub.Clients.All.employeeAdded(employee);
         }
         [HttpPost]
         public void Update(Employee employee)
